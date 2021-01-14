@@ -1,4 +1,3 @@
-
 use Linkedin_Practice
 
 
@@ -25,6 +24,9 @@ order by Avg_Salary Desc
 
 ------------------------Bbbbbbbbbbbbbbbbbbbb>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 select * from staff
+select * from company_divisions
+select * from company_regions
+
 
 -- B1
 SELECT gender, count(*)
@@ -38,11 +40,17 @@ GROUP BY department
 
 
 -- B3 > Max salary and job title
-SELECT MAX(salary), job_title
+SELECT MAX(salary), job_title, department
 FROM staff
 where salary =(select max(salary) from staff) -- job_title like '%Sales'
-group by job_title 
-having salary = (select max(salary) from staff)
+group by job_title ,department
+--having salary = (select max(salary) from staff)
+
+SELECT (salary), job_title, department, max(salary) over (partition by department order by salary desc) as MaxSal,
+MIN(salary) over (partition by department order by salary asc) as Minsal
+FROM staff
+
+
 
 -- B4 >  Top 3 salary
 SELECT Top 10 (salary), job_title
@@ -156,7 +164,7 @@ ON s.department = cd.department where company_division is null
 
 --- Multiple joins and view
 CREATE VIEW Staff_div_reg AS
-			(SELECT s.*, CD.company_division, CR.company_regions
+			(SELECT s.*, CD.company_division, CR.company_regions, 
 			FROM staff S LEFT JOIN company_divisions CD ON s.department = CD.department
 						LEFT JOIN company_regions CR ON CR.region_id = S.region_id)
 			--order by company_division asc)
@@ -260,7 +268,7 @@ ORDER BY count(*) DESC
 	
 	EXEC EmployeeDetails_lstname 'Carr'
 
----- AMAzon interview kind
+	---- AMAzon interview kind
 
 	CREATE VIEW Staff_div_reg2 AS
 			
@@ -295,8 +303,12 @@ ORDER BY count(*) DESC
 				ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS FIRST_HireFrame,
 
 				LAST_VALUE(id) OVER (PARTITION BY YEAR(Start_date) order by start_date
-				ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS LAST_HireFrame		
-		from Staff_div_reg			
+				ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS LAST_HireFrame
+				
+		from Staff_div_reg
+			
+			
+			
 			where start_date between  '2010-10-02' and  '2014-12-31'
 			
-		
+			
