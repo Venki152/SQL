@@ -260,3 +260,43 @@ ORDER BY count(*) DESC
 	
 	EXEC EmployeeDetails_lstname 'Carr'
 
+---- AMAzon interview kind
+
+	CREATE VIEW Staff_div_reg2 AS
+			
+			
+			
+			SELECT s.department, s.gender, count(distinct cr.company_regions) as ct -- ,CD.company_division, CR.company_regions
+			FROM staff S LEFT JOIN company_divisions CD ON s.department = CD.department
+						LEFT JOIN company_regions CR ON CR.region_id = S.region_id
+				WHERE S.start_date > '2009-1-01' and s.start_date < '2012-12-31'
+				GROUP BY s.department, s.gender --, CD.company_division, CR.company_regions
+				ORDER BY ct
+				
+			--order by company_division asc)
+
+			select *  from Staff_div_reg
+
+				select *  from Staff_div_reg
+			where start_date > '2010-10-02' and start_date < '2014-12-31'
+			order by start_date desc
+
+			select gender, department, count(distinct id)
+					-- ,rank() OVER (PARTITION BY department order by salary) as Rnk
+			from Staff_div_reg
+			where start_date between  '2010-10-02' and  '2014-12-31'
+			group by gender, department
+		
+
+
+
+		select id, gender, department, start_date, DATENAME(month,start_date), year(start_date),
+				FIRST_VALUE(id) OVER (PARTITION BY YEAR(Start_date) order by start_date
+				ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS FIRST_HireFrame,
+
+				LAST_VALUE(id) OVER (PARTITION BY YEAR(Start_date) order by start_date
+				ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS LAST_HireFrame		
+		from Staff_div_reg			
+			where start_date between  '2010-10-02' and  '2014-12-31'
+			
+		
